@@ -5,7 +5,7 @@ pipeline {
     }
     environment {
         GIT_REPO_URL = 'https://github.com/lohith21/course-jenkins-project.git'
-        GIT_CREDENTIALS = 'github // Jenkins credential ID
+        GIT_CREDENTIALS = 'github' // Jenkins credential ID
     }
     stages {
         stage('Fetch Git Tags') {
