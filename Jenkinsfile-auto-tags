@@ -1,46 +1,17 @@
 pipeline {
     agent any
     parameters {
-        string(name: 'REGEX_PATTERN', defaultValue: 'v[0-9]+\\.[0-9]+', description: 'Regex to filter tags (e.g., v1.x)')
-    }
-    environment {
-        GIT_REPO_URL = 'https://github.com/lohith21/course-jenkins-project.git'
-        GIT_CREDENTIALS = 'github' // Jenkins credential ID
+        string(name: 'GIT_TAG', defaultValue: '', description: 'Git tag selected via dropdown')
     }
     stages {
-        stage('Fetch Git Tags') {
+        stage('Clone and Checkout') {
             steps {
                 script {
-                    // Clone the repository
                     sh """
-                    git clone --quiet ${env.GIT_REPO_URL} repo
+                    git clone https://github.com/lohith21/course-jenkins-project.git
                     cd repo
-                    git fetch --tags
+                    git checkout tags/${params.GIT_TAG}
                     """
-
-                    // List all tags matching the regex
-                    def tags = sh(
-                        script: """
-                        cd repo
-                        git tag | grep -E '${params.REGEX_PATTERN}' || true
-                        """,
-                        returnStdout: true
-                    ).trim()
-
-                    if (tags) {
-                        echo "Matching Tags:"
-                        echo tags
-                    } else {
-                        error("No tags matching the pattern: ${params.REGEX_PATTERN}")
-                    }
-                }
-            }
-        }
-        stage('Use Selected Tag') {
-            steps {
-                script {
-                    // Example: Use a specific tag for deployment or testing
-                    echo "Use tags from the previous stage as needed here."
                 }
             }
         }
