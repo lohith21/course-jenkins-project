@@ -5,6 +5,7 @@ pipeline {
         IMAGE_NAME = 'lujjannappa/jenkins-flask-app'
         IMAGE_TAG = "${IMAGE_NAME}:${env.GIT_COMMIT}"
         GH_TOKEN = credentials('github')
+        PATH = "${env.HOME}/.local/bin:${env.PATH}"
     }
 
     stages {
@@ -28,6 +29,8 @@ pipeline {
         stage('Setup') {
             steps {
                 script {
+                    sh 'export PATH="/root/.local/bin:$PATH"'
+                    sh 'poetry --version'
                     sh "poetry install --with dev"
                 }
             }
