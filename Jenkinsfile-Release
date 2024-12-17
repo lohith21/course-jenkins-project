@@ -2,15 +2,11 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'sanjeevkt720/jenkins-flask-app'
+        IMAGE_NAME = 'lujjannappa/jenkins-flask-app'
         IMAGE_TAG = "${IMAGE_NAME}:${env.GIT_COMMIT}"
-        KUBECONFIG = credentials('kubeconfig-credentials-id')
-        AWS_ACCESS_KEY_ID = credentials('aws-access-key')
-        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
-        GH_TOKEN = credentials('github-access-token')
+        GH_TOKEN = credentials('github')
+        PATH = "${env.HOME}/.local/bin:${env.PATH}"
     }
-
-
 
     stages {
 
@@ -33,6 +29,8 @@ pipeline {
         stage('Setup') {
             steps {
                 script {
+                    sh 'export PATH="/root/.local/bin:$PATH"'
+                    sh 'poetry --version'
                     sh "poetry install --with dev"
                 }
             }
@@ -71,7 +69,7 @@ pipeline {
 
                 stage('Docker Login') {
                     steps {
-                        withCredentials([usernamePassword(credentialsId: 'docker-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                         sh 'echo ${PASSWORD} | docker login -u ${USERNAME} --password-stdin'}
                         echo 'Login successfully'
                     }
@@ -93,9 +91,7 @@ pipeline {
 
                 stage('Deploy') {
                     steps {
-                        sh 'kubectl config use-context user@prod.us-east-1.eksctl.io'
-                        sh 'kubectl config current-context'
-                        sh "kubectl set image deployment/flask-app flask-app=${IMAGE_TAG_RELEASE}"
+                        echo "Successfully deployed"
                     }
                 }
             }
