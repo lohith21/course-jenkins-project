@@ -5,6 +5,7 @@ pipeline {
         IMAGE_NAME = 'lujjannappa/jenkins-flask-app'
         IMAGE_TAG = "${IMAGE_NAME}:${env.GIT_COMMIT}"
         GH_TOKEN = credentials('github')
+        PATH = "${env.HOME}/.local/bin:${env.PATH}"
     }
 
     stages {
