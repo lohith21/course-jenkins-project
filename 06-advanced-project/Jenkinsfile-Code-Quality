@@ -19,7 +19,7 @@ pipeline {
         stage('Setup') {
             steps {
                 sh 'export PATH="/root/.local/bin:$PATH"'
-                sh "poetry install --with dev"
+                sh "06-advanced-project/poetry install --with dev"
             }
         }
 
