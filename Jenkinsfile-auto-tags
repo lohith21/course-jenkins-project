@@ -1,17 +1,44 @@
 pipeline {
     agent any
-    environment {
-        GITHUB_CREDENTIALS = credentials('github')
+    parameters {
+        choice(
+            name: 'GIT_TAG',
+            choices: getGitTags(),
+            description: 'Select a Git tag'
+        )
     }
     stages {
-        stage('Clone Repository') {
+        stage('Checkout') {
             steps {
                 script {
+                    echo "Selected Git tag: ${params.GIT_TAG}"
                     sh """
                     git clone https://github.com/lohith21/course-jenkins-project.git
+                    cd repo
+                    git checkout tags/${params.GIT_TAG}
                     """
                 }
             }
         }
     }
+}
+
+def getGitTags() {
+    def repoUrl = "https://api.github.com/repos/lohith21/course-jenkins-project/tags"
+    def authToken = "github"
+    def tags = []
+    try {
+        def connection = new URL(repoUrl).openConnection()
+        if (authToken) {
+            connection.setRequestProperty("Authorization", "token ${authToken}")
+        }
+        connection.connect()
+        if (connection.responseCode == 200) {
+            def tagsJson = new groovy.json.JsonSlurper().parse(connection.inputStream)
+            tags = tagsJson.collect { it.name }
+        }
+    } catch (Exception e) {
+        println "Error fetching Git tags: ${e.message}"
+    }
+    return tags ?: ['No tags found']
 }
