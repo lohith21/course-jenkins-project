@@ -1,10 +1,16 @@
 pipeline {
     agent any
+    environment {
+        SELECTED_TAG = ${params.GIT_TAGS}
+    }
+
+
     stages {
         stage('List GitHub Tags') {
             steps {
                 script {
                     // Clone the GitHub repository
+                    echo "Selected GIT Tag is ${SELECTED_TAG}"
                     git branch: 'main', url: 'https://github.com/lohith21/course-jenkins-project.git', credentialsId: 'github'
 
                     // List tags using the Git command
