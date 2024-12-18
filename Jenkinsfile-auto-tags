@@ -1,16 +1,14 @@
 pipeline {
     agent any
-    parameters {
-        string(name: 'GIT_TAG', defaultValue: '', description: 'Git tag selected via dropdown')
+    environment {
+        GITHUB_CREDENTIALS = credentials('github-pat')
     }
     stages {
-        stage('Clone and Checkout') {
+        stage('Clone Repository') {
             steps {
                 script {
                     sh """
-                    git clone https://github.com/lohith21/course-jenkins-project.git
-                    cd repo
-                    git checkout tags/${params.GIT_TAG}
+                    git clone https://github.com/<username>/<repo>.git
                     """
                 }
             }
