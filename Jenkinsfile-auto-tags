@@ -1,19 +1,18 @@
-def getGitTags() {
-    def repoUrl = "https://api.github.com/repos/lohith21/course-jenkins-project/tags"
-    def authToken = "github"
-    def tags = []
-    try {
-        def connection = new URL(repoUrl).openConnection()
-        if (authToken) {
-            connection.setRequestProperty("Authorization", "token ${authToken}")
+pipeline {
+    agent any
+    stages {
+        stage('List GitHub Tags') {
+            steps {
+                script {
+                    // Clone the GitHub repository
+                    git branch: 'main', url: 'https://github.com/your-repo-url.git', credentialsId: 'your-credentials-id'
+
+                    // List tags using the Git command
+                    def tags = sh(script: 'git tag', returnStdout: true).trim()
+                    echo "Tags in the repository:"
+                    echo tags
+                }
+            }
         }
-        connection.connect()
-        if (connection.responseCode == 200) {
-            def tagsJson = new groovy.json.JsonSlurper().parse(connection.inputStream)
-            tags = tagsJson.collect { it.name }
-        }
-    } catch (Exception e) {
-        println "Error fetching Git tags: ${e.message}"
     }
-    return tags ?: ['No tags found']
 }
