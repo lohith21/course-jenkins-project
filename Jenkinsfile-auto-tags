@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        SELECTED_TAG = ${params.GIT_TAGS}
+        SELECTED_TAG = "${params.GIT_TAGS}"
     }
 
 
