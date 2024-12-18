@@ -1,34 +1,3 @@
-pipeline {
-    agent any
-    parameters {
-        choice(
-            name: 'GIT_TAG',
-            choices: getGitTags(),
-            description: 'Select a Git tag'
-        )
-    }
-    stages {
-        stage('Clean Workspace') {
-            steps {
-                cleanWs()
-            }
-        }
-
-        stage('Checkout') {
-            steps {
-                script {
-                    echo "Selected Git tag: ${params.GIT_TAG}"
-                    sh """
-                    git clone https://github.com/lohith21/course-jenkins-project.git
-                    cd course-jenkins-project
-                    git checkout tags/${params.GIT_TAG}
-                    """
-                }
-            }
-        }
-    }
-}
-
 def getGitTags() {
     def repoUrl = "https://api.github.com/repos/lohith21/course-jenkins-project/tags"
     def authToken = "github"
