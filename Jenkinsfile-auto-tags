@@ -8,7 +8,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                    git clone https://github.com/<username>/<repo>.git
+                    git clone https://github.com/lohith21/course-jenkins-project.git
                     """
                 }
             }
