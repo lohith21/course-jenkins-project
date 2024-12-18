@@ -5,7 +5,7 @@ pipeline {
             steps {
                 script {
                     // Clone the GitHub repository
-                    git branch: 'main', url: 'https://github.com/your-repo-url.git', credentialsId: 'your-credentials-id'
+                    git branch: 'main', url: 'https://github.com/lohith21/course-jenkins-project.git', credentialsId: 'github'
 
                     // List tags using the Git command
                     def tags = sh(script: 'git tag', returnStdout: true).trim()
